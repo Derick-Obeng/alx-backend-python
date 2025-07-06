@@ -1,23 +1,1 @@
-�
 
-
-ó
-    	Þgh¨  ã                   ó   • S SK rS rg)é    Nc                #   óZ  #   •  [         R                  R                  SSSSS9n U R                   SS 9nUR	                  S5        U H'  nUv •  UR
-                  5         U R
-                  5         M)  
-   g
-! [         R                  R                    a  n[        S	U 35         S
-nAg
-S
-nAff = f7f)
-z1Generaor that yields users from a MySQL database.Ú	localhostÚrootÚpasswordÚ
-ALX_prodev)ÚhostÚuserr   ÚdatabaseT)Ú
-dictionaryz<SELECT user_id, first_name, last_name, email, age FROM userszDatabase Error: N)ÚmysqlÚ	connectorÚ connectÚcursorÚexcecuteÚcloseÚErrorÚprint)Ú
-connectionr   ÚrowÚerrs       ÚRc:\Users\Coded\PRO-DEV\alx-backend-python\python-generators-0x00\0-stream_users.pyÚstream_usersr      s£   é € ðÜ—O‘O×+Ñ+ØØØØ!ð	 ,ð 
-ˆ
-ð ×"Ñ"¨dÐ"Ð3ˆà‰ÐVÔWÛˆCØŠIàL‰LŒNØ×ÑÖò	 øô
- ?‰?×
- Ñ
- ó Ü
-Ð   Ð&Ô'Üûðüs/   ‚B+„A-A2 Á1B+Á2B(ÂB#ÂB+Â#B(Â(B+)Úmysql.connectorr   r   © ó    r   Ú<module>r      s
-   ðÛ ór   
