@@ -1,0 +1,83 @@
+ó
+    LrfhD  ã            
+       ó2  • S SK rS SKrS SKrSrSrSS jrS r S rS  r	S r
+ \
+R                  5       r\
+" \S	S
+9 r\R                   " \5      r\ Hn  r\R'                  S
+\ S3\S
+   45        \R)                  5       (       a  M4  \" \R,                  " 5       5      r\R'                  S\ S3\\S   \S
+   \S   45        Mp  
+   SSS5        \
+R1                  5         \R3                  5         g! , (       d  f       N/= f! \  a  r\" S\ 35         SrCgSrCff = f)é    NÚ
+ALX_prodevÚ	user_datac                  óü   •  [         R                  R                  SSSSS9nUR                   5       (       a
+  [	        S5        U$ g! [         R                  R
+                    a  n[	        S U 35         SnAgSnAff = f)	z<Connect to a MySQL database and return the connection objectzCoded-SomethingÚrootz
+Akinscoded47@éê  )ÚhostÚuserÚpasswordÚportzConnection successfulú Error: N)ÚmysqlÚ	connectorÚ connectÚis_connectedÚprintÚError) r   r	   r
+   Ú db_namer
+   Ú
+connectionÚes           ÚHc:\Users\Coded\PRO-DEV\alx-backend-python\python-generators-0x00\seed.pyÚ
+connect_dbr   
+   s~   € ð
+Ü—_‘_×,Ñ,Ø"ØØ$àð
+ -ð 
+ˆ
+ð ×
+"Ñ
+"×
+$Ñ
+$ÜÐ)Ô*ØÐð %øô ?‰?×
+ Ñ
+ ó Ü
+ ˜sˆmÔÜûðús   ‚AA ÁA;Á#A6Á6A;c                 ó  •  U R                  5       nUR                  S[         35        U R                   5         UR	                  5         g ! [
+        R                  R                    a  n[        SU 35         S nAg S nAff = f)NzCREATE DATABASE IF NOT EXISTS zFailed creating database: )	ÚcursorÚ executeÚ DB_NAMEÚcommitÚcloser
+   r   r   r   )r   r   Úerrs      r   Úcreate_databaser      sk   € ð2Ø×"Ñ"Ó$ˆØ‰Ð7¼ °yÐAÔBØ×ÑÔØ‰øÜ
+?‰?×
+ Ñ
+ ó 2Ü
+Ð*¨3¨%Ð0×1Ñ1ûð2ús   ‚AA
+ Á
+BÁ)A<Á<Bc                   óÂ   •  [         R                  R                  SSS[        S9n U $ ! [         R                  R                    a  n[
+        SU 35         S nAg S nAff = f)NÚ	localhostr   Ú
+your_password)r   r	   r
+   Údatabaser   )r
+   r   r   r   r   r   )Úmy_dbr   s     r   Úconnect_to_prodevr%   $   s^   € ð
+Ü—‘×'Ñ'ØØØ$Üð	 (ð 
+ˆð ˆøÜ
+?‰?×
+ Ñ
+ ó Ü
+ ˜uˆoÔÜûðús   ‚%( ¨AÁAÁAc                 óè   •  U R                  5       nUR                  S5        U R                  5         UR                   5         [	        S5        g! [
+          a  n[	        SU 35         SnAgSnAff = f)zICreates a table 'user_data' if it does not exist with the required fieldsa7  
+            CREATE TABLE IF NOT EXISTS user_data (
+                id VARCHAR(36) PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL UNIQUE,
+                age INT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        z'Table 'user_data' created successfully.zError creating table: N)r   r   r   r   r   Ú	Exception)r   r   r   s      r   Úcreate_tabler(   0   si   € ð,Ø×"Ñ"Ó$ˆØ‰ð ô 	
+ð 	×ÑÔØ‰ŒÜ
+Ð7Õ8øÜ
+ó ,Ü
+Ð& q cÐ*×+Ñ+ûð,ús   ‚AA Á
+A1ÁA,Á,A1c                 ó   • g)z.Insert data into user_data table from CSV fileN© )r   r   s     r   Ú
+insert_datar+   D   s    ó    Ú )Ú newlinezSELECT email FROM z WHERE email = %sÚemailz!
+                    INSERT INTO zY (user_id, name, email, age)
+                    VALUES (%s, %s, %s, %s)
+                ÚnameÚagezError inserting data: )r    )Úmysql.connectorr
+   ÚcsvÚuuidr   Ú
+TABLE_NAMEr   r   r%   r(   r+   r   r   ÚopenÚcsv_filenameÚ csvfileÚ
+DictReaderÚreaderÚrowr   ÚfetchoneÚstrÚuuid4Úuidr   r   r'   r   r   r*   r,   r   Ú<module>r@      s1  ðÛ Û 
+Û 
+ð 
+€ Ø
+€
+ôò" 2ò
+ò,ò(:ð,Ø×"Ñ"Ó$ˆÙ
+,¨Ò
++¨wØ—^’^ GÓ,ˆFÛà—‘Ð!3°J°<Ð?PÐQÐTWÐX_ÑT`ÐSbÔcØ—?‘?×$Ñ$Ùá˜$Ÿ*š*›,Ó'Ø—‘ð $!Ø!+ ð -ð ð ˜3˜v™;¨¨G©°c¸%±jÐAö Cñ ÷ ,ð 	×ÑÔØ‰÷ ,Õ
++ûð ó ,Ù
+Ð& q cÐ*×+Ñ+ûð,ús/   £C; ºB C*Ã(C; Ã*
+C8 Ã4 C; Ã;DÄ
+DÄD
