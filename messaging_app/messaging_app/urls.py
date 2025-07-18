@@ -24,6 +24,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('chats.urls')), # include app routes here
     path('', lambda request: JsonResponse({'message': 'Welcome to Messaging API '})),
+    path('api-auth/', include('rest_framework.urls')),
+
+
 
 ]
 
