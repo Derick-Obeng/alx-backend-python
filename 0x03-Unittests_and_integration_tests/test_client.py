@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-"""
-Unittest module for the GithubOrgClient class.
-Covers both unit and integration tests.
-"""
 
 import unittest
 from unittest.mock import patch, PropertyMock, Mock
@@ -48,9 +44,7 @@ class TestGithubOrgClient(unittest.TestCase):
 
     def test_public_repos_url(self):
         with patch.object(
-            GithubOrgClient,
-            'org',
-            new_callable=PropertyMock
+            GithubOrgClient, 'org', new_callable=PropertyMock
         ) as mock_org:
             mock_org.return_value = {
                 "repos_url": "https://api.github.com/orgs/google/repos"
@@ -59,8 +53,7 @@ class TestGithubOrgClient(unittest.TestCase):
             client = GithubOrgClient("google")
             result = client._public_repos_url
             self.assertEqual(
-                result,
-                "https://api.github.com/orgs/google/repos"
+                result, "https://api.github.com/orgs/google/repos"
             )
 
     @patch("client.get_json")
@@ -73,8 +66,7 @@ class TestGithubOrgClient(unittest.TestCase):
         mock_get_json.return_value = test_payload
 
         with patch.object(
-            GithubOrgClient,
-            "_public_repos_url",
+            GithubOrgClient, "_public_repos_url",
             new_callable=PropertyMock
         ) as mock_url:
             mock_url.return_value = (
@@ -109,7 +101,6 @@ class TestGithubOrgClient(unittest.TestCase):
     }
 ], class_name_func=lambda cls, num, params: f"TestIntegrationGithubOrgClient_{num}")
 class TestIntegrationGithubOrgClient(unittest.TestCase):
-
     """Integration tests for the GithubOrgClient class."""
 
     @classmethod
@@ -141,8 +132,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def test_public_repos_with_license(self):
         client = GithubOrgClient("google")
         self.assertEqual(
-            client.public_repos("apache-2.0"),
-            self.apache2_repos
+            client.public_repos("apache-2.0"), self.apache2_repos
         )
 
 
