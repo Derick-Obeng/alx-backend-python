@@ -13,11 +13,13 @@ from .serializers import (
     ConversationSerializer,
     MessageSerializer
 )
+from .permissions import IsParticipantOfConversation, IsOwner
+from rest_framework import viewsets
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     serializer_class = ConversationSerializer
 
 
@@ -26,7 +28,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # Only show conversations the current user is a participant in
-        return self.queryset.filter(participants=self.request.user)
+        return Conversation.objects.filter(participants=self.request.user)
 
     def perform_create(self, serializer):
         conversation = serializer.save()
@@ -37,7 +39,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated,IsOwner]
 
 
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
@@ -46,7 +48,9 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # Only show messages in conversations the user is part of
-        return self.queryset.filter(conversation__participants=self.request.user)
+        return Conversation.objects.filter(conversation__participants=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(sender=self.request.user)
+
+

@@ -2,6 +2,7 @@
 
 from rest_framework import serializers
 from .models import CustomUser, Conversation, Message
+from django.contrib.auth import get_user_model
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,13 +18,14 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = ['message_id', 'sender', 'sender_username', 'message_body', 'sent_at', 'is_read']
 
 class ConversationSerializer(serializers.ModelSerializer):
-    participants = serializers.StringRelatedField(many=True)
+    participants = serializers.PrimaryKeyRelatedField(many=True,queryset=get_user_model().objects.all() ,write_only=True)
+    participants_username = serializers.StringRelatedField(many=True,source='participants', read_only=True)
     messages = MessageSerializer(many=True, read_only=True)
     message_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
-        fields = ['id', 'participants', 'created_at', 'messages', 'message_count']
+        fields = ['conversation_id', 'participants', 'participants_username' 'created_at', 'messages', 'message_count']
 
     def get_message_count(self, obj):
         return obj.messages.count()

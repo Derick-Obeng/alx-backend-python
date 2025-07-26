@@ -9,9 +9,12 @@ import uuid
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from django.conf import settings
+
+
 class CustomUser(AbstractUser):
     """Custom user extending Django's built-in user."""
-    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)  # Even though AbstractUser has this
     first_name = models.CharField(max_length=30)  # Override to meet checker expectations
@@ -38,7 +41,7 @@ class Message(models.Model):
     """Message in a conversation."""
     message_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     conversation = models.ForeignKey(Conversation, related_name='messages', on_delete=models.CASCADE)
-    sender = models.ForeignKey('CustomUser', related_name='sent_messages', on_delete=models.CASCADE)
+    sender = models.ForeignKey(CustomUser, related_name='sent_messages', on_delete=models.CASCADE)
     message_body = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
