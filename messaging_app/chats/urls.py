@@ -11,7 +11,15 @@ router.register(r'conversations', ConversationViewSet, basename='conversation')
 messages_router = NestedDefaultRouter(router, r'conversations', lookup='conversation')
 messages_router.register(r'messages', MessageViewSet, basename='conversation-messages')
 
+message_list = MessageViewSet.as_view({
+    'get': 'list',
+    'post': 'create',
+})
+
+
 urlpatterns = [
     path('', include(router.urls)),
     path('', include(messages_router.urls)),
+    path('conversations/<int:conversation_id>/messages/', message_list, name='conversation-messages'),
+
 ]
