@@ -18,6 +18,10 @@ from .serializers import (
 from .permissions import IsParticipant, IsOwner
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from rest_framework.viewsets import ReadOnlyModelViewSet
+
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -72,3 +76,11 @@ class MessageViewSet(viewsets.ModelViewSet):
         serializer.save(sender=self.request.user, conversation=conversation)
 
 
+def delete_user():
+    return None
+
+
+@method_decorator(cache_page(60), name='list')  # 60 seconds cache
+class MessageViewSet(ReadOnlyModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
