@@ -80,7 +80,3 @@ def delete_user():
     return None
 
 
-@method_decorator(cache_page(60), name='list')  # 60 seconds cache
-class MessageViewSet(ReadOnlyModelViewSet):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
