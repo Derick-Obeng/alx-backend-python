@@ -38,7 +38,8 @@ class Notification(models.Model):
 class MessageHistory(models.Model):
     message = models.ForeignKey(Message, on_delete=models.CASCADE,related_name='history')
     old_content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    edited_at = models.DateTimeField(auto_now_add=True)
+    edited_by = models.ForeignKey(User, on_delete=models.CASCADE, default=False)
 
     def __str__(self):
         return f"{self.message} -> {self.old_content}"
