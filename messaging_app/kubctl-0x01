@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+
+DEPLOYMENT_NAME="django-app"   # change to your actual deployment name
+SERVICE_NAME="django-service"  # change if your service name is different
+NAMESPACE="default"            # change if you're using another namespace
+
+echo "🔹 Scaling $DEPLOYMENT_NAME to 3 replicas..."
+kubectl scale deployment "$DEPLOYMENT_NAME" --replicas=3 --namespace="$NAMESPACE"
+
+echo "🔹 Waiting for pods to be ready..."
+kubectl rollout status deployment "$DEPLOYMENT_NAME" --namespace="$NAMESPACE"
+
+echo "🔹 Current pods:"
+kubectl get pods --namespace="$NAMESPACE"
+
+# Get service URL from minikube
+echo "🔹 Getting service URL..."
+SERVICE_URL=$(minikube service "$SERVICE_NAME" --url --namespace="$NAMESPACE")
+
+echo "🔹 Running load test with wrk..."
+wrk -t4 -c50 -d10s "$SERVICE_URL"
+
+echo "🔹 Monitoring resource usage..."
+kubectl top pods --namespace="$NAMESPACE"
