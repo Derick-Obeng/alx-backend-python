@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Update blue deployment to version 2.0 without downtime
+
+set -e  # Exit on error
+
+echo "🚀 Applying updated deployment..."
+kubectl apply -f blue_deployment.yaml
+
+echo "🔄 Waiting for rollout to complete..."
+kubectl rollout status deployment/messaging-app-blue
+
+echo "📡 Sending continuous requests to check for downtime..."
+for i in {1..20}; do
+    RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://192.168.49.2:10.96.0.1)
+    TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
+    echo "[$TIMESTAMP] HTTP $RESPONSE"
+    sleep 1
+done
+
+echo "📋 Current running pods:"
+kubectl get pods -o wide

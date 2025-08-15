@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+echo "🚀 Deploying BLUE version..."
+kubectl apply -f blue_deployment.yaml
+
+echo "🚀 Deploying GREEN version..."
+kubectl apply -f green_deployment.yaml
+
+echo "📡 Applying Service..."
+kubectl apply -f kubeservice.yaml
+
+echo "⏳ Waiting for green pods to start..."
+sleep 10
+
+echo "🔍 Checking logs for GREEN deployment..."
+GREEN_PODS=$(kubectl get pods -l app=django,version=green -o name)
+for pod in $GREEN_PODS; do
+    kubectl logs $pod || { echo "❌ Error in $pod"; exit 1; }
+done
+
+echo "✅ Green deployment running without errors. Ready to switch traffic."
