@@ -1,0 +1,47 @@
+name: Django CI Simple
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_DATABASE: messaging_app_test
+        ports: ['3306:3306']
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get install -y default-libmysqlclient-dev
+        pip install -r messaging_app/requirements.txt
+        pip install pytest pytest-django pycodestyle
+    
+    - name: Setup database
+      run: |
+        mysql -h 127.0.0.1 -u root -prootpassword -e "CREATE DATABASE messaging_app_test;"
+    
+    - name: Test
+      working-directory: ./messaging_app
+      env:
+        DATABASE_NAME: messaging_app_test
+        DATABASE_USER: root
+        DATABASE_PASSWORD: rootpassword
+        DATABASE_HOST: 127.0.0.1
+        DJANGO_SETTINGS_MODULE: messaging_app.test_settings
+      run: |
+        python manage.py migrate --run-syncdb
+        python -m pycodestyle --max-line-length=120 . || true
+        python manage.py test
+        python -m pytest chats/tests.py -v

@@ -1,15 +1,31 @@
-# Test settings for Jenkins pipeline
+# Test settings for Jenkins pipeline and GitHub Actions
 from .settings import *
 import os
 import sys
 
 # Override database for testing
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',  # Use in-memory database for faster tests
+# Use MySQL in GitHub Actions, SQLite locally
+if os.getenv('GITHUB_ACTIONS'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv('DATABASE_NAME', 'messaging_app_test'),
+            'USER': os.getenv('DATABASE_USER', 'messaging_user'),
+            'PASSWORD': os.getenv('DATABASE_PASSWORD', 'messaging_password'),
+            'HOST': os.getenv('DATABASE_HOST', '127.0.0.1'),
+            'PORT': os.getenv('DATABASE_PORT', '3306'),
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',  # Use in-memory database for faster tests
+        }
+    }
 
 # Disable migrations for faster testing
 class DisableMigrations:
