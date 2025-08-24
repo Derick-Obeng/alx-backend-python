@@ -1,0 +1,149 @@
+pipeline {
+    agent {
+        docker {
+            image 'python:3.9-slim'
+            args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
+    
+    environment {
+        // Docker Configuration
+        IMAGE_NAME = 'messaging-app'
+        CONTAINER_NAME = 'messaging-app-container'
+        HOST_PORT = '8000'
+        CONTAINER_PORT = '8000'
+        
+        // Database Configuration (for testing, use SQLite)
+        MYSQL_ROOT_PASSWORD = 'test_root_password'
+        MYSQL_DB = 'test_messaging_app_db' 
+        MYSQL_USER = 'test_user'
+        MYSQL_PASSWORD = 'test_password'
+        MYSQL_HOST = 'localhost'
+        MYSQL_PORT = '3306'
+        
+        // Django Configuration
+        DJANGO_SETTINGS_MODULE = 'messaging_app.settings'
+        PYTHONPATH = '/app'
+        PYTHONDONTWRITEBYTECODE = '1'
+        PYTHONUNBUFFERED = '1'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    apt-get update && apt-get install -y netcat-traditional
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                    pip install pytest pytest-django pytest-html pytest-cov
+                '''
+            }
+        }
+        
+        stage('Lint') {
+            steps {
+                sh '''
+                    pip install pycodestyle
+                    pycodestyle --max-line-length=120 . || true
+                '''
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh '''
+                    # Configure Django for testing
+                    export DJANGO_SETTINGS_MODULE=messaging_app.settings
+                    
+                    # Run tests with pytest and generate reports
+                    pytest chats/tests.py \
+                        --html=test-report.html \
+                        --self-contained-html \
+                        --cov=chats \
+                        --cov-report=html:htmlcov \
+                        --cov-report=xml:coverage.xml \
+                        --junit-xml=test-results.xml \
+                        -v
+                '''
+            }
+            post {
+                always {
+                    // Archive test reports
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: '.',
+                        reportFiles: 'test-report.html',
+                        reportName: 'Pytest HTML Report'
+                    ])
+                    
+                    // Archive coverage reports
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'htmlcov',
+                        reportFiles: 'index.html',
+                        reportName: 'Coverage Report'
+                    ])
+                    
+                    // Publish test results
+                    junit 'test-results.xml'
+                    
+                    // Archive coverage data
+                    archiveArtifacts artifacts: 'coverage.xml,test-report.html,test-results.xml', fingerprint: true
+                }
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                sh '''
+                    docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .
+                    docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${IMAGE_NAME}:latest
+                '''
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                sh '''
+                    # Stop and remove existing container if it exists
+                    docker stop ${CONTAINER_NAME} || true
+                    docker rm ${CONTAINER_NAME} || true
+                    
+                    # Run new container
+                    docker run -d \
+                        --name ${CONTAINER_NAME} \
+                        -p ${HOST_PORT}:${CONTAINER_PORT} \
+                        -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} \
+                        -e MYSQL_DB=${MYSQL_DB} \
+                        -e MYSQL_USER=${MYSQL_USER} \
+                        -e MYSQL_PASSWORD=${MYSQL_PASSWORD} \
+                        -e MYSQL_HOST=${MYSQL_HOST} \
+                        -e MYSQL_PORT=${MYSQL_PORT} \
+                        ${IMAGE_NAME}:latest
+                '''
+            }
+        }
+    }
+    
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}    
