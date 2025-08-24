@@ -54,11 +54,6 @@ A practical messaging app that showcases how these backend concepts work in a re
 
 ---
 
-## 🤝 Contributing
 
-Contributions, suggestions, and new ideas are highly encouraged!  
-Feel free to fork, open issues, or submit pull requests.
-
----
 
 **Happy learning & building!**
